@@ -38,7 +38,7 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
 
         table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_element_by_tag_name('tr')
+        rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
                 any(row.text == '1: Buy peacock feathers' for row in rows),
                 'new table row doesnt appear'
@@ -50,9 +50,9 @@ class NewVisitorTest(unittest.TestCase):
 
         # the page updates again, it has both items
 
-        # edith doners whether the site will remember her list she sees the site
-        # has generated a unique URL for her - there is explanatory text to that
-        # effect
+        # edith wonders whether the site will remember her list she sees the
+        # site has generated a unique URL for her - there is explanatory
+        # text to that effect
 
         # she visits the url and sees her todo list is still ther
 
