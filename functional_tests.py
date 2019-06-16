@@ -43,13 +43,30 @@ class NewVisitorTest(unittest.TestCase):
 
         # there is still a text box, and she enters another item, enters
         # "use peacock feathers to make a fly"
-        self.fail('finish the test')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+                inputbox.get_attribute('placeholder'),
+                'Enter a to-do item'
+                )
 
-        # the page updates again, it has both items
+        # she types "use peacock feathers to make a fly" into a text box
+        inputbox.send_keys('Use peacock feathers to make a fly')
+
+        # when she hits enter the page updates and now the page lists
+        # both items one after the other
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.assertIn('2: Use peacock feathers to make a fly',
+                      [row.text for row in rows])
 
         # edith wonders whether the site will remember her list she sees the
         # site has generated a unique URL for her - there is explanatory
         # text to that effect
+        self.fail('finish the test')
 
         # she visits the url and sees her todo list is still ther
 
