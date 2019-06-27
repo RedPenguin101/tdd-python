@@ -23,7 +23,8 @@ class NewListTest(TestCase):
         response = self.client.post('/lists/new', data={
             'item_text': 'A new list item'
             })
-        self.assertRedirects(response, '/lists/the-only-list/')
+        new_list = List.objects.first()
+        self.assertRedirects(response, f'/lists/{new_list.id}/')
 
 
 class ListAndItemModelsTest(TestCase):
@@ -58,15 +59,23 @@ class ListAndItemModelsTest(TestCase):
 class ListViewTest(TestCase):
 
     def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list/')
+        list_ = List.objects.create()
+        response = self.client.get(f'/lists/{list_.id}/')
         self.assertTemplateUsed(response, 'list.html')
 
-    def test_displays_all_list_items(self):
-        list_ = List.objects.create()
-        Item.objects.create(text='itemey 1', list=list_)
-        Item.objects.create(text='itemey 2', list=list_)
+    def test_displays_correct_list_items(self):
+        correct_list = List.objects.create()
+        Item.objects.create(text='itemey 1', list=correct_list)
+        Item.objects.create(text='itemey 2', list=correct_list)
 
-        response = self.client.get('/lists/the-only-list/')
+
+        otherlist = List.objects.create()
+        Item.objects.create(text='itemey 3', list=otherlist)
+        Item.objects.create(text='itemey 4', list=otherlist)
+
+        response = self.client.get(f'/lists/{correct_list.id}/')
 
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
+        self.assertNotContains(response, 'itemey 3')
+        self.assertNotContains(response, 'itemey 4')
